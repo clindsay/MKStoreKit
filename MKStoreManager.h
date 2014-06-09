@@ -71,7 +71,8 @@
 // use this method to start a purchase
 - (void) buyFeature:(NSString*) featureId
          onComplete:(void (^)(NSString* purchasedFeature, NSData*purchasedReceipt, NSArray* availableDownloads)) completionBlock
-        onCancelled:(void (^)(void)) cancelBlock;
+        onCancelled:(void (^)(void)) cancelBlock
+          onFailure:(void (^)(NSError* error)) failureBlock;
 
 // use this method to restore a purchase
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock

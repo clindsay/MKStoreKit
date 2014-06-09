@@ -51,6 +51,7 @@
 @interface MKStoreManager () //private methods and properties
 
 @property (nonatomic, copy) void (^onTransactionCancelled)();
+@property (nonatomic, copy) void (^onTransactionFailed)();
 @property (nonatomic, copy) void (^onTransactionCompleted)(NSString *productId, NSData* receiptData, NSArray* downloads);
 
 @property (nonatomic, copy) void (^onRestoreFailed)(NSError* error);
@@ -420,9 +421,11 @@ static MKStoreManager* _sharedStoreManager;
 - (void) buyFeature:(NSString*) featureId
          onComplete:(void (^)(NSString*, NSData*, NSArray*)) completionBlock
         onCancelled:(void (^)(void)) cancelBlock
+          onFailure:(void (^)(NSError* error)) failureBlock
 {
   self.onTransactionCompleted = completionBlock;
   self.onTransactionCancelled = cancelBlock;
+  self.onTransactionFailed = failureBlock;
   
   [MKSKProduct verifyProductForReviewAccess:featureId
                                  onComplete:^(NSNumber * isAllowed)
@@ -741,8 +744,8 @@ static MKStoreManager* _sharedStoreManager;
 	
   [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
   
-  if(self.onTransactionCancelled)
-    self.onTransactionCancelled();
+  if(self.onTransactionFailed)
+    self.onTransactionFailed( transaction.error );
 }
 
 - (void) completeTransaction: (SKPaymentTransaction *)transaction
