@@ -7,6 +7,7 @@ Pod::Spec.new do |spec|
   spec.summary      = 'In-App Purchases StoreKit for iOS devices.'
   spec.source       = { :git => 'https://github.com/clindsay/MKStoreKit.git', :branch => 'failure_handling' }
   spec.source_files = [ '*.{h,m}', 'Externals/*.{h,m}' ]
+  spec.exclude_files= 'VerificationController.{h,m}'
   spec.framework    = [ 'StoreKit', 'Security' ]
   spec.requires_arc = true
 end
