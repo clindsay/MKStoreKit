@@ -744,7 +744,9 @@ static MKStoreManager* _sharedStoreManager;
 	
   [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
   
-  if(self.onTransactionFailed)
+  if (transaction.error.code == SKErrorPaymentCancelled && self.onTransactionCancelled)
+    self.onTransactionCancelled();
+  else if(self.onTransactionFailed)
     self.onTransactionFailed( transaction.error );
 }
 
