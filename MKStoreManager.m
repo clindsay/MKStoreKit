@@ -210,7 +210,7 @@ static MKStoreManager* _sharedStoreManager;
 }
 
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock
-                                    onCanceled:(void (^)(void)) cancelBlock
+                                    onCancelled:(void (^)(void)) cancelBlock
                                      onFailure:(void (^)(NSError* error)) failureBLock;
 {
   self.onRestoreCompleted = completionBlock;

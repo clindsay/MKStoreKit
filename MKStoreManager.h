@@ -76,7 +76,7 @@
 
 // use this method to restore a purchase
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock
-                                       onCanceled:(void (^)(void)) cancelBlock
+                                       onCancelled:(void (^)(void)) cancelBlock
                                        onFailure:(void (^)(NSError* error)) failureBLock;
 
 
