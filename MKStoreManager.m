@@ -211,10 +211,10 @@ static MKStoreManager* _sharedStoreManager;
 
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock
                                     onCancelled:(void (^)(void)) cancelBlock
-                                     onFailure:(void (^)(NSError* error)) failureBLock;
+                                     onFailure:(void (^)(NSError* error)) failureBlock;
 {
   self.onRestoreCompleted = completionBlock;
-  self.onRestoreFailed = errorBlock;
+  self.onRestoreFailed = failureBlock;
   self.onRestoreCancelled = cancelBlock;
   
 	[[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
