@@ -76,7 +76,9 @@
 
 // use this method to restore a purchase
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock
-                                       onError:(void (^)(NSError* error)) errorBlock;
+                                       onCanceled:(void (^)(void)) cancelBlock
+                                       onFailure:(void (^)(NSError* error)) failureBLock;
+
 
 // For consumable support
 - (BOOL) canConsumeProduct:(NSString*) productName quantity:(int) quantity;

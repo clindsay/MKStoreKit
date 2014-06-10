@@ -54,6 +54,7 @@
 @property (nonatomic, copy) void (^onTransactionFailed)();
 @property (nonatomic, copy) void (^onTransactionCompleted)(NSString *productId, NSData* receiptData, NSArray* downloads);
 
+@property (nonatomic, copy) void (^onRestoreCancelled)();
 @property (nonatomic, copy) void (^onRestoreFailed)(NSError* error);
 @property (nonatomic, copy) void (^onRestoreCompleted)();
 
@@ -209,10 +210,12 @@ static MKStoreManager* _sharedStoreManager;
 }
 
 - (void) restorePreviousTransactionsOnComplete:(void (^)(void)) completionBlock
-                                       onError:(void (^)(NSError*)) errorBlock
+                                    onCanceled:(void (^)(void)) cancelBlock
+                                     onFailure:(void (^)(NSError* error)) failureBLock;
 {
   self.onRestoreCompleted = completionBlock;
   self.onRestoreFailed = errorBlock;
+  self.onRestoreCancelled = cancelBlock;
   
 	[[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
@@ -226,9 +229,12 @@ static MKStoreManager* _sharedStoreManager;
 
 -(void) restoreFailedWithError:(NSError*) error
 {
-  if(self.onRestoreFailed)
+  if (error.code == SKErrorPaymentCancelled && self.onRestoreCancelled)
+      self.onRestoreCancelled();
+  else if(self.onRestoreFailed)
     self.onRestoreFailed(error);
   self.onRestoreFailed = nil;
+  self.onRestoreCancelled = nil;
 }
 
 -(void) requestProductData
