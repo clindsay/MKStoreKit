@@ -62,7 +62,6 @@
 
 @property (nonatomic, strong) SKProductsRequest *productsRequest;
 
-- (void) requestProductData;
 - (void) startVerifyingSubscriptionReceipts;
 -(void) rememberPurchaseOfProduct:(NSString*) productIdentifier withReceipt:(NSData*) receiptData;
 -(void) addToQueue:(NSString*) productId;
@@ -287,6 +286,9 @@ static MKStoreManager* _sharedStoreManager;
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
+    if (self.isProductsAvailable)
+        return;
+    
 	[self.purchasableObjects addObjectsFromArray:response.products];
 	
 #ifndef NDEBUG
@@ -309,6 +311,9 @@ static MKStoreManager* _sharedStoreManager;
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error
 {
+    if (self.isProductsAvailable)
+        return;
+    
 	self.isProductsAvailable = NO;
   [[NSNotificationCenter defaultCenter] postNotificationName:kProductFetchedNotification
                                                       object:[NSNumber numberWithBool:self.isProductsAvailable]];
@@ -464,7 +469,11 @@ static MKStoreManager* _sharedStoreManager;
     NSArray *allIds = [self.purchasableObjects valueForKey:@"productIdentifier"];
     NSUInteger index = [allIds indexOfObject:productId];
     
-    if(index == NSNotFound) return;
+    if(index == NSNotFound)
+    {
+        self.onTransactionFailed([NSError errorWithDomain:@"MKStoreManager" code:0 userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedString(@"Unable to connect to the App Store to complete your purchase. Check your network connection and try again.", @"")}]);
+        return;
+    };
     
     SKProduct *thisProduct = [self.purchasableObjects objectAtIndex:index];
 		SKPayment *payment = [SKPayment paymentWithProduct:thisProduct];

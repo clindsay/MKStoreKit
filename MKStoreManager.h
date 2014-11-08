@@ -79,6 +79,7 @@
                                        onCancelled:(void (^)(void)) cancelBlock
                                        onFailure:(void (^)(NSError* error)) failureBlock;
 
+- (void) requestProductData;
 
 // For consumable support
 - (BOOL) canConsumeProduct:(NSString*) productName quantity:(int) quantity;
