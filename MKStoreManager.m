@@ -39,6 +39,7 @@
 #import "MKSKSubscriptionProduct.h"
 #import "MKSKProduct.h"
 #import "NSData+MKBase64.h"
+#import <LocalAuthentication/LocalAuthentication.h>
 #if ! __has_feature(objc_arc)
 #error MKStoreKit is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
 #endif
@@ -228,7 +229,7 @@ static MKStoreManager* _sharedStoreManager;
 
 -(void) restoreFailedWithError:(NSError*) error
 {
-  if (error.code == SKErrorPaymentCancelled && self.onRestoreCancelled)
+  if ((error.code == SKErrorPaymentCancelled || error.code == LAErrorUserCancel || error.code == LAErrorSystemCancel) && self.onRestoreCancelled)
       self.onRestoreCancelled();
   else if(self.onRestoreFailed)
     self.onRestoreFailed(error);
@@ -759,7 +760,7 @@ static MKStoreManager* _sharedStoreManager;
 	
   [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
   
-  if (transaction.error.code == SKErrorPaymentCancelled && self.onTransactionCancelled)
+  if ((transaction.error.code == SKErrorPaymentCancelled || transaction.error.code == LAErrorUserCancel || transaction.error.code == LAErrorSystemCancel) && self.onTransactionCancelled)
     self.onTransactionCancelled();
   else if(self.onTransactionFailed)
     self.onTransactionFailed( transaction.error );
